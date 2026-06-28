@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>HDFC FAQ Assistant</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Outfit:wght@500;600;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#006c4f",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#4cdeac",
+                      "surface-bright": "#f9f9ff",
+                      "on-error": "#ffffff",
+                      "surface": "#f9f9ff",
+                      "surface-variant": "#d8e3fb",
+                      "on-primary-fixed": "#002116",
+                      "secondary-fixed-dim": "#ffb870",
+                      "on-primary": "#ffffff",
+                      "on-background": "#111c2d",
+                      "tertiary-fixed": "#ffdad6",
+                      "surface-container-high": "#dee8ff",
+                      "on-secondary-container": "#653900",
+                      "secondary": "#8b5000",
+                      "background": "#f9f9ff",
+                      "inverse-surface": "#263143",
+                      "on-primary-container": "#00412e",
+                      "on-tertiary-fixed-variant": "#832521",
+                      "on-secondary-fixed-variant": "#693c00",
+                      "inverse-primary": "#4cdeac",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#cfdaf2",
+                      "inverse-on-surface": "#ecf1ff",
+                      "error": "#ba1a1a",
+                      "surface-container": "#e7eeff",
+                      "surface-container-highest": "#d8e3fb",
+                      "secondary-container": "#ff9800",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "outline": "#6c7a72",
+                      "tertiary-container": "#f97d73",
+                      "on-primary-fixed-variant": "#00513b",
+                      "on-secondary-fixed": "#2c1600",
+                      "on-surface-variant": "#3c4a43",
+                      "on-error-container": "#93000a",
+                      "outline-variant": "#bbcac1",
+                      "secondary-fixed": "#ffdcbe",
+                      "on-surface": "#111c2d",
+                      "on-tertiary-container": "#6f1615",
+                      "on-tertiary-fixed": "#410003",
+                      "surface-tint": "#006c4f",
+                      "primary-fixed": "#6dfbc7",
+                      "tertiary-fixed-dim": "#ffb4ac",
+                      "primary-container": "#00b889",
+                      "tertiary": "#a33c36",
+                      "surface-container-low": "#f0f3ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin_mobile": "16px",
+                      "gutter": "24px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "xl": "48px",
+                      "xs": "4px",
+                      "md": "16px",
+                      "base": "4px",
+                      "container_max": "1200px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Outfit"],
+                      "headline-md": ["Outfit"],
+                      "headline-lg-mobile": ["Outfit"],
+                      "display": ["Outfit"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bbcac1;
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #3c4a43;
+        }
+
+        .chat-bubble-user {
+            border-bottom-right-radius: 4px;
+        }
+        .chat-bubble-assistant {
+            border-bottom-left-radius: 4px;
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .sidebar-active-item {
+            background-color: #DFF7EA;
+            color: #006c4f;
+        }
+        .dark .sidebar-active-item {
+            background-color: rgba(223, 247, 234, 0.1);
+            color: #4cdeac;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background transition-colors duration-300 font-body-md overflow-hidden h-screen flex">
+    <!-- Left Sidebar -->
+    <aside class="hidden md:flex flex-col w-[280px] bg-surface-container-lowest dark:bg-inverse-surface border-r border-outline-variant/30 h-full z-[110] relative">
+        <div class="p-lg space-y-6 flex flex-col h-full overflow-y-auto">
+            <!-- New Question Button -->
+            <button class="w-full bg-[#00b889] text-white py-4 rounded-full font-headline-md flex items-center justify-center gap-2 shadow-lg shadow-[#00b889]/20 hover:opacity-90 transition-all active:scale-95" onclick="window.location.reload()">
+                <span class="material-symbols-outlined font-bold">add</span>
+                <span>New Question</span>
+            </button>
+            <!-- Navigation Menu -->
+            <nav class="space-y-1">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-full sidebar-active-item transition-colors" href="javascript:void(0)" onclick="window.location.reload()">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+                    <span class="font-label-md">Home</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors" href="javascript:void(0)" onclick="showFaqModal()">
+                    <span class="material-symbols-outlined">help</span>
+                    <span class="font-label-md">Investment FAQ</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors" href="javascript:void(0)" onclick="showTrendsModal()">
+                    <span class="material-symbols-outlined">trending_up</span>
+                    <span class="font-label-md">Market Trends</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors" href="javascript:void(0)" onclick="showHistoryModal()">
+                    <span class="material-symbols-outlined">history</span>
+                    <span class="font-label-md">Historical Data</span>
+                </a>
+            </nav>
+            <!-- Example Questions Section -->
+            <div class="pt-4">
+                <p class="font-label-sm text-on-surface-variant/60 uppercase tracking-widest px-4 mb-3">Example Questions</p>
+                <div class="space-y-3">
+                    <button class="w-full text-left p-3 rounded-xl bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('What is the exit load for HDFC Mid-Cap Opportunities Fund?')">
+                        <p class="text-on-surface line-clamp-2 group-hover:text-primary transition-colors">What is the exit load for HDFC Mid-Cap Opportunities Fund?</p>
+                    </button>
+                    <button class="w-full text-left p-3 rounded-xl bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('How can I download my capital gains statement?')">
+                        <p class="text-on-surface line-clamp-2 group-hover:text-primary transition-colors">How can I download my capital gains statement?</p>
+                    </button>
+                    <button class="w-full text-left p-3 rounded-xl bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('What is the riskometer classification of the HDFC ELSS Tax Saver?')">
+                        <p class="text-on-surface line-clamp-2 group-hover:text-primary transition-colors">What is the riskometer classification of the HDFC ELSS Tax Saver?</p>
+                    </button>
+                </div>
+            </div>
+            <!-- Sidebar Footer -->
+            <div class="mt-auto pt-6 border-t border-outline-variant/20 px-4">
+                <p class="text-[11px] text-on-surface-variant/60 mb-1 uppercase tracking-tighter">Last Updated: Today, 09:15 AM</p>
+                <a class="text-primary text-label-sm hover:underline flex items-center gap-1" href="https://www.amfiindia.com" target="_blank" rel="noopener noreferrer">
+                    Help Center
+                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col relative h-full">
+        <!-- TopAppBar -->
+        <header class="fixed top-0 right-0 w-full md:w-[calc(100%-280px)] z-[100] bg-surface/80 dark:bg-background/80 backdrop-blur-xl border-b border-outline-variant/30 dark:border-outline/20">
+            <div class="flex justify-between items-center h-16 px-margin_mobile md:px-lg max-w-[900px] mx-auto w-full">
+                <div class="flex items-center gap-3">
+                    <span class="font-headline-md text-headline-md font-semibold text-on-background">HDFC FAQ Assistant</span>
+                    <span class="hidden sm:inline-flex bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider">Facts-only</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button aria-label="Toggle Theme" class="p-2 rounded-full hover:bg-surface-container-high transition-colors duration-300 active:scale-95 text-on-surface-variant" onclick="toggleTheme()">
+                        <span class="material-symbols-outlined" id="theme-icon">light_mode</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area (Chat Canvas) -->
+        <main class="flex-1 overflow-y-auto pt-20 pb-36 px-margin_mobile max-w-[900px] mx-auto w-full scroll-smooth" id="chat-canvas">
+            <!-- Empty State / Welcome View -->
+            <div class="flex flex-col items-center justify-center min-h-full py-12 text-center" id="welcome-view">
+                <div class="mb-12">
+                    <div class="w-20 h-20 bg-primary-container text-on-primary-container rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/10">
+                        <span class="material-symbols-outlined text-[40px]" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+                    </div>
+                    <h1 class="font-display text-display text-on-background mb-4">Factual Mutual Fund Q&amp;A</h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-md mx-auto">Instant clarity on your HDFC mutual fund investments with verified source citations.</p>
+                </div>
+            </div>
+            <!-- Chat History -->
+            <div class="space-y-lg hidden" id="message-container">
+                <!-- Messages will be injected here -->
+            </div>
+        </main>
+
+        <!-- Bottom Input Panel -->
+        <div class="fixed bottom-0 right-0 w-full md:w-[calc(100%-280px)] z-50 px-margin_mobile pb-8 pt-4 pointer-events-none">
+            <div class="max-w-[900px] mx-auto w-full pointer-events-auto">
+                <div class="relative bg-surface-container-highest dark:bg-inverse-surface shadow-lg rounded-full flex items-center p-2 border border-outline-variant/30 transition-all duration-300 group focus-within:ring-2 focus-within:ring-primary/40">
+                    <div class="flex-1 px-4">
+                        <input class="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant font-body-md py-3" id="chat-input" maxlength="500" placeholder="Ask about exit loads, risks, or tax savings..." type="text"/>
+                    </div>
+                    <div class="flex items-center gap-3 pr-2">
+                        <div class="hidden sm:block text-on-surface-variant font-label-sm text-label-sm tabular-nums">
+                            <span id="char-count">0</span>/500
+                        </div>
+                        <button class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center disabled:opacity-30 disabled:grayscale transition-all duration-300 active:scale-90 shadow-md hover:bg-primary-container hover:text-on-primary-container" disabled="" id="send-button">
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-center font-label-sm text-label-sm text-on-surface-variant mt-3 px-4">The assistant provides factual data from HDFC Mutual Fund documents only. Disclaimer: Facts-only. No investment advice.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BottomNavBar - Mobile Only -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center h-20 pb-safe px-4 bg-surface-container dark:bg-inverse-surface shadow-lg z-[60] border-t border-outline-variant/10">
+        <div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1.5 transition-all duration-200 active:scale-90" onclick="window.location.reload()">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+            <span class="font-label-sm text-label-sm">Chat</span>
+        </div>
+        <div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" onclick="alert('Insight panel coming soon!')">
+            <span class="material-symbols-outlined">analytics</span>
+            <span class="font-label-sm text-label-sm">Insights</span>
+        </div>
+        <div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" onclick="toggleTheme()">
+            <span class="material-symbols-outlined">contrast</span>
+            <span class="font-label-sm text-label-sm">Theme</span>
+        </div>
+    </nav>
+
+    <script>
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const charCount = document.getElementById('char-count');
+        const messageContainer = document.getElementById('message-container');
+        const welcomeView = document.getElementById('welcome-view');
+        const chatCanvas = document.getElementById('chat-canvas');
+
+        // Theme Toggle Logic
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                if (icon) icon.innerText = 'light_mode';
+                document.documentElement.classList.remove('dark');
+            } else {
+                body.classList.add('dark');
+                if (icon) icon.innerText = 'dark_mode';
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        // Input Interactions
+        chatInput.addEventListener('input', () => {
+            const length = chatInput.value.length;
+            charCount.innerText = length;
+            sendButton.disabled = length === 0;
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && chatInput.value.trim() !== '') {
+                sendMessage(chatInput.value.trim());
+            }
+        });
+
+        sendButton.addEventListener('click', () => {
+            if (chatInput.value.trim() !== '') {
+                sendMessage(chatInput.value.trim());
+            }
+        });
+
+        function prefillInput(text) {
+            chatInput.value = text;
+            chatInput.dispatchEvent(new Event('input'));
+            sendMessage(text);
+        }
+
+        async function sendMessage(text) {
+            // Hide welcome view on first message
+            if (!welcomeView.classList.contains('hidden')) {
+                welcomeView.classList.add('hidden');
+                messageContainer.classList.remove('hidden');
+            }
+
+            // Append User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'flex justify-end';
+            userMsg.innerHTML = `
+                <div class="chat-bubble-user max-w-[80%] bg-primary text-white p-4 rounded-2xl shadow-sm">
+                    <p class="font-body-md text-body-md">${escapeHTML(text)}</p>
+                </div>
+            `;
+            messageContainer.appendChild(userMsg);
+            chatInput.value = '';
+            chatInput.dispatchEvent(new Event('input'));
+
+            // Scroll to bottom
+            chatCanvas.scrollTop = chatCanvas.scrollHeight;
+
+            // Show Typing Indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'flex justify-start';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="chat-bubble-assistant bg-surface-container dark:bg-inverse-surface border border-outline-variant/30 p-4 rounded-2xl flex items-center gap-1">
+                    <div class="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <div class="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                </div>
+            `;
+            messageContainer.appendChild(typingDiv);
+            chatCanvas.scrollTop = chatCanvas.scrollHeight;
+
+            // Call Backend API
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: text })
+                });
+
+                if (!response.ok) {
+                    throw new Error('API server returned error status.');
+                }
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                if (messageContainer.contains(typingDiv)) {
+                    messageContainer.removeChild(typingDiv);
+                }
+
+                const assistantMsg = document.createElement('div');
+                assistantMsg.className = 'flex justify-start';
+                
+                // Format elements based on API response
+                const isRefusal = data.is_refusal;
+                const iconName = isRefusal ? 'gpp_maybe' : 'verified_user';
+                const badgeText = isRefusal ? 'Disclaimer' : 'Verified Fact';
+                const badgeColor = isRefusal ? 'text-amber-500 dark:text-amber-400' : 'text-primary dark:text-[#4cdeac]';
+                
+                let citationHTML = '';
+                if (data.citation) {
+                    citationHTML = `
+                        <a href="${data.citation}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 bg-surface-container-high dark:bg-surface-container-low px-2 py-0.5 rounded text-on-surface-variant hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            <span class="font-label-sm text-label-sm">Source Citation</span>
+                        </a>
+                    `;
+                }
+
+                assistantMsg.innerHTML = `
+                    <div class="chat-bubble-assistant max-w-[85%] bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant/30 p-4 rounded-2xl shadow-sm space-y-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="material-symbols-outlined ${badgeColor} text-[20px]">${iconName}</span>
+                            <span class="font-label-sm text-label-sm ${badgeColor} uppercase tracking-tighter">${badgeText}</span>
+                        </div>
+                        <p class="font-body-md text-body-md text-on-surface">${escapeHTML(data.response)}</p>
+                        <div class="pt-3 mt-3 border-t border-outline-variant/20 flex flex-wrap items-center justify-between gap-2">
+                            ${citationHTML}
+                            <span class="font-label-sm text-label-sm text-on-surface-variant/70 italic">Last updated: ${data.last_updated}</span>
+                        </div>
+                    </div>
+                `;
+                messageContainer.appendChild(assistantMsg);
+
+            } catch (err) {
+                // Remove typing indicator
+                if (messageContainer.contains(typingDiv)) {
+                    messageContainer.removeChild(typingDiv);
+                }
+
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'flex justify-start';
+                errorMsg.innerHTML = `
+                    <div class="chat-bubble-assistant max-w-[85%] bg-surface-container-lowest dark:bg-inverse-surface border border-red-500/30 p-4 rounded-2xl shadow-sm">
+                        <p class="font-body-md text-body-md text-red-500 dark:text-red-400">I am sorry, but I failed to communicate with the server. Please verify your connection.</p>
+                    </div>
+                `;
+                messageContainer.appendChild(errorMsg);
+                console.error(err);
+            }
+
+            chatCanvas.scrollTop = chatCanvas.scrollHeight;
+        }
+
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Modal Operations Script
+        function openModal(title, iconName, contentHTML) {
+            const modal = document.getElementById('dialog-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalIcon = document.getElementById('modal-icon');
+            const modalBody = document.getElementById('modal-body');
+            if (modal && modalTitle && modalIcon && modalBody) {
+                modalTitle.innerText = title;
+                modalIcon.innerText = iconName;
+                modalBody.innerHTML = contentHTML;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('dialog-modal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Close modal on ESC key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Close modal on clicking backdrop after DOM parses
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('dialog-modal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+        });
+
+        function showFaqModal() {
+            const content = `
+                <div class="space-y-4">
+                    <p class="font-semibold text-primary dark:text-[#4cdeac]">Investment FAQ & Bot Capabilities</p>
+                    <p>The FAQ Assistant answers factual queries regarding 5 selected HDFC mutual fund direct schemes:</p>
+                    <ul class="list-disc pl-5 space-y-2 text-on-surface">
+                        <li><strong>HDFC Mid-Cap Opportunities Fund</strong> (Direct Growth)</li>
+                        <li><strong>HDFC Flexi Cap Fund</strong> (Direct Growth)</li>
+                        <li><strong>HDFC Focused 30 Fund</strong> (Direct Growth)</li>
+                        <li><strong>HDFC ELSS Tax Saver Fund</strong> (Direct Plan Growth)</li>
+                        <li><strong>HDFC Top 100 / Large Cap Fund</strong> (Direct Growth)</li>
+                    </ul>
+                    <p class="text-on-surface-variant text-sm mt-3">You can query specific metrics such as Expense Ratio, Exit Load conditions, Net Asset Values (NAV), Assets Under Management (AUM), Riskometer rankings, and minimum investment limits. Standard compliance rules prevent advisory interpretations.</p>
+                </div>
+            `;
+            openModal("Investment FAQ Guidance", "help", content);
+        }
+
+        function showTrendsModal() {
+            const content = `
+                <div class="space-y-4">
+                    <div class="bg-amber-500/10 border border-amber-500/20 text-amber-500 p-4 rounded-xl flex items-start gap-3">
+                        <span class="material-symbols-outlined">warning</span>
+                        <div>
+                            <p class="font-semibold">Compliance Filter Active</p>
+                            <p class="text-sm mt-1">To ensure strict adherence to SEBI investment advisory regulations, dynamic market predictions, speculative forecasts, and buy/sell advice are disabled.</p>
+                        </div>
+                    </div>
+                    <p>The FAQ Assistant only processes historical, verified facts. For live market index trackers, benchmark performance, and stock indices, please refer to the National Stock Exchange:</p>
+                    <div class="pt-2">
+                        <a href="https://www.nseindia.com" target="_blank" rel="noopener noreferrer" class="text-primary dark:text-[#4cdeac] hover:underline flex items-center gap-1">
+                            Go to National Stock Exchange (NSE India)
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+            openModal("Market Trends Filter", "trending_up", content);
+        }
+
+        function showHistoryModal() {
+            const content = `
+                <div class="space-y-4">
+                    <p class="font-semibold">Factual Launch & Benchmark History</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse mt-2">
+                            <thead>
+                                <tr class="border-b border-outline-variant/30 text-on-surface-variant text-sm">
+                                    <th class="pb-2 font-semibold pr-4">Scheme Name</th>
+                                    <th class="pb-2 font-semibold pr-4">Launch Date</th>
+                                    <th class="pb-2 font-semibold pr-4">Launch NAV</th>
+                                    <th class="pb-2 font-semibold">Benchmark</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant/10 text-sm">
+                                <tr>
+                                    <td class="py-2.5 font-medium pr-4">HDFC Mid-Cap Opportunities</td>
+                                    <td class="py-2.5 pr-4">25 Jun 2007</td>
+                                    <td class="py-2.5 pr-4">₹10.00</td>
+                                    <td class="py-2.5">NIFTY Midcap 150 TRI</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 font-medium pr-4">HDFC Flexi Cap</td>
+                                    <td class="py-2.5 pr-4">01 Jan 1995</td>
+                                    <td class="py-2.5 pr-4">₹10.00</td>
+                                    <td class="py-2.5">NIFTY 500 TRI</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 font-medium pr-4">HDFC Focused 30</td>
+                                    <td class="py-2.5 pr-4">17 Sep 2004</td>
+                                    <td class="py-2.5 pr-4">₹10.00</td>
+                                    <td class="py-2.5">NIFTY 500 TRI</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 font-medium pr-4">HDFC ELSS Tax Saver</td>
+                                    <td class="py-2.5 pr-4">10 Dec 1999</td>
+                                    <td class="py-2.5 pr-4">₹10.00</td>
+                                    <td class="py-2.5">NIFTY 500 TRI</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 font-medium pr-4">HDFC Top 100 Large Cap</td>
+                                    <td class="py-2.5 pr-4">11 Oct 1996</td>
+                                    <td class="py-2.5 pr-4">₹10.00</td>
+                                    <td class="py-2.5">NIFTY 100 TRI</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-2 italic">*All figures are verified facts gathered from official Scheme Information Documents (SIDs).</p>
+                </div>
+            `;
+            openModal("Scheme Launch History", "history", content);
+        }
+    </script>
+
+    <!-- Dialog Modal Overlay -->
+    <div id="dialog-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] hidden items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant/30 w-full max-w-2xl rounded-2xl p-6 shadow-2xl space-y-4 relative animate-in fade-in zoom-in-95 duration-200">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary dark:hover:text-[#4cdeac] transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="flex items-center gap-2.5 mb-2 border-b border-outline-variant/20 pb-3">
+                <span class="material-symbols-outlined text-primary dark:text-[#4cdeac] text-[28px]" id="modal-icon">info</span>
+                <h3 id="modal-title" class="font-headline-md text-headline-md font-semibold text-on-background">Modal Title</h3>
+            </div>
+            <div id="modal-body" class="font-body-md text-body-md text-on-surface space-y-3 max-h-[400px] overflow-y-auto pr-2">
+                <!-- Content will be injected dynamically -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

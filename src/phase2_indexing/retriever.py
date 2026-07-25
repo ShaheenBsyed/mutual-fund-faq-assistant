@@ -6,6 +6,10 @@ import chromadb
 from chromadb.utils import embedding_functions
 from rank_bm25 import BM25Okapi
 from typing import List, Dict, Any, Tuple
+from dotenv import load_dotenv
+
+# Load env vars (.env locally, Render env in production)
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -61,11 +65,18 @@ class HybridRetriever:
         # 1. Initialize persistent Chroma client & embedding function
         if not os.path.exists(DB_DIR_PATH):
             raise FileNotFoundError(f"ChromaDB persistent directory not found at: {DB_DIR_PATH}. Run Indexer first.")
-            
+
+        # Use the same Gemini embedding function as the indexer (text-embedding-004, 768-dim).
+        # This matches the vectors already stored in the DB and avoids loading PyTorch locally.
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise EnvironmentError("GEMINI_API_KEY environment variable is not set.")
+
         logger.info(f"Connecting to ChromaDB index at: {DB_DIR_PATH}")
         self.client = chromadb.PersistentClient(path=DB_DIR_PATH)
-        self.embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="all-MiniLM-L6-v2"
+        self.embedding_fn = embedding_functions.GoogleGenerativeAiEmbeddingFunction(
+            api_key=api_key,
+            model_name="models/text-embedding-004"
         )
         self.collection = self.client.get_collection(
             name=COLLECTION_NAME,

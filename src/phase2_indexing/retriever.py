@@ -103,7 +103,15 @@ class HybridRetriever:
         
         # Step 2: Dense Cosine Similarity Search
         dense_results = []
-        where_filter = {"scheme_name": scheme_filter} if scheme_filter else None
+        if scheme_filter:
+            where_filter = {
+                "$or": [
+                    {"scheme_name": scheme_filter},
+                    {"scheme_name": "General / Non-Scheme Specific"}
+                ]
+            }
+        else:
+            where_filter = None
         
         try:
             # Retrieve up to 10 candidates from vector store
@@ -131,7 +139,10 @@ class HybridRetriever:
             
         # Step 3: Filter Corpus & Fit BM25 dynamically on the matching subset
         if scheme_filter:
-            filtered_corpus = [c for c in self.raw_corpus if c["metadata"]["scheme_name"] == scheme_filter]
+            filtered_corpus = [
+                c for c in self.raw_corpus 
+                if c["metadata"]["scheme_name"] in (scheme_filter, "General / Non-Scheme Specific")
+            ]
         else:
             filtered_corpus = self.raw_corpus
             

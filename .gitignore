@@ -1,9 +1,14 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+**/__pycache__/
 *.py[cod]
+**/*.py[cod]
 *$py.class
 
-# Environments
+# Test cache
+.pytest_cache/
+
+# Environments — KEEP .env out of git (use HF Spaces Secrets instead)
 .env
 .venv/
 venv/
@@ -23,3 +28,8 @@ env/
 scratch/
 tmp/
 temp/
+
+# NOTE: data/ is intentionally NOT ignored.
+# data/vector_db/ and data/processed/corpus.json must be committed
+# so that Hugging Face Spaces has the pre-built ChromaDB index ready
+# without needing to re-run the ingestion pipeline on startup.

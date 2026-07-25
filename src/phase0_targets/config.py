@@ -24,8 +24,14 @@ def load_target_schemes() -> List[Dict[str, Any]]:
             raise ValueError(f"Scheme at index {idx} is missing required keys: {missing}")
             
         url = scheme["groww_url"]
-        if not url.startswith("https://groww.in/mutual-funds/"):
-            raise ValueError(f"Invalid Groww URL format at index {idx}: {url}")
+        allowed_prefixes = (
+            "https://groww.in/",
+            "https://www.hdfcfund.com/",
+            "https://www.amfiindia.com/",
+            "https://www.sebi.gov.in/"
+        )
+        if not url.startswith(allowed_prefixes):
+            raise ValueError(f"Invalid official URL format at index {idx}: {url}")
             
     return schemes
 

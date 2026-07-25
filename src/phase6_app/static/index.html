@@ -148,8 +148,8 @@
     <aside class="hidden md:flex flex-col w-[280px] bg-surface-container-lowest dark:bg-inverse-surface border-r border-outline-variant/30 h-full z-[110] relative">
         <div class="p-lg space-y-6 flex flex-col h-full overflow-y-auto">
             <!-- New Question Button -->
-            <button class="w-full bg-[#00b889] text-white py-4 rounded-full font-headline-md flex items-center justify-center gap-2 shadow-lg shadow-[#00b889]/20 hover:opacity-90 transition-all active:scale-95" onclick="window.location.reload()">
-                <span class="material-symbols-outlined font-bold">add</span>
+            <button class="w-full bg-[#00b889] text-white py-2.5 rounded-full font-label-md text-label-md flex items-center justify-center gap-1.5 shadow-md shadow-[#00b889]/20 hover:opacity-90 transition-all active:scale-95" onclick="window.location.reload()">
+                <span class="material-symbols-outlined text-[18px]">add</span>
                 <span>New Question</span>
             </button>
             <!-- Navigation Menu -->
@@ -162,10 +162,6 @@
                     <span class="material-symbols-outlined">help</span>
                     <span class="font-label-md">Investment FAQ</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors" href="javascript:void(0)" onclick="showTrendsModal()">
-                    <span class="material-symbols-outlined">trending_up</span>
-                    <span class="font-label-md">Market Trends</span>
-                </a>
                 <a class="flex items-center gap-3 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container transition-colors" href="javascript:void(0)" onclick="showHistoryModal()">
                     <span class="material-symbols-outlined">history</span>
                     <span class="font-label-md">Historical Data</span>
@@ -175,13 +171,13 @@
             <div class="pt-4">
                 <p class="font-label-sm text-on-surface-variant/60 uppercase tracking-widest px-4 mb-3">Example Questions</p>
                 <div class="space-y-3">
-                    <button class="w-full text-left p-3 rounded-xl bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('What is the exit load for HDFC Mid-Cap Opportunities Fund?')">
+                    <button class="w-full text-left p-3 rounded-lg bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('What is the exit load for HDFC Mid-Cap Opportunities Fund?')">
                         <p class="text-on-surface line-clamp-2 group-hover:text-primary transition-colors">What is the exit load for HDFC Mid-Cap Opportunities Fund?</p>
                     </button>
-                    <button class="w-full text-left p-3 rounded-xl bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('How can I download my capital gains statement?')">
+                    <button class="w-full text-left p-3 rounded-lg bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('How can I download my capital gains statement?')">
                         <p class="text-on-surface line-clamp-2 group-hover:text-primary transition-colors">How can I download my capital gains statement?</p>
                     </button>
-                    <button class="w-full text-left p-3 rounded-xl bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('What is the riskometer classification of the HDFC ELSS Tax Saver?')">
+                    <button class="w-full text-left p-3 rounded-lg bg-surface border border-outline-variant/30 hover:border-primary transition-all text-label-md group" onclick="prefillInput('What is the riskometer classification of the HDFC ELSS Tax Saver?')">
                         <p class="text-on-surface line-clamp-2 group-hover:text-primary transition-colors">What is the riskometer classification of the HDFC ELSS Tax Saver?</p>
                     </button>
                 </div>
@@ -205,11 +201,7 @@
                     <span class="font-headline-md text-headline-md font-semibold text-on-background">HDFC FAQ Assistant</span>
                     <span class="hidden sm:inline-flex bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider">Facts-only</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button aria-label="Toggle Theme" class="p-2 rounded-full hover:bg-surface-container-high transition-colors duration-300 active:scale-95 text-on-surface-variant" onclick="toggleTheme()">
-                        <span class="material-symbols-outlined" id="theme-icon">light_mode</span>
-                    </button>
-                </div>
+<div></div>
             </div>
         </header>
 
@@ -261,10 +253,6 @@
         <div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" onclick="alert('Insight panel coming soon!')">
             <span class="material-symbols-outlined">analytics</span>
             <span class="font-label-sm text-label-sm">Insights</span>
-        </div>
-        <div class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" onclick="toggleTheme()">
-            <span class="material-symbols-outlined">contrast</span>
-            <span class="font-label-sm text-label-sm">Theme</span>
         </div>
     </nav>
 
@@ -401,7 +389,7 @@
                         <p class="font-body-md text-body-md text-on-surface">${escapeHTML(data.response)}</p>
                         <div class="pt-3 mt-3 border-t border-outline-variant/20 flex flex-wrap items-center justify-between gap-2">
                             ${citationHTML}
-                            <span class="font-label-sm text-label-sm text-on-surface-variant/70 italic">Last updated: ${data.last_updated}</span>
+                            <span class="font-label-sm text-label-sm text-on-surface-variant/70 italic">Last updated from sources: ${data.last_updated}</span>
                         </div>
                     </div>
                 `;
@@ -476,96 +464,155 @@
 
         function showFaqModal() {
             const content = `
-                <div class="space-y-4">
-                    <p class="font-semibold text-primary dark:text-[#4cdeac]">Investment FAQ & Bot Capabilities</p>
-                    <p>The FAQ Assistant answers factual queries regarding 5 selected HDFC mutual fund direct schemes:</p>
-                    <ul class="list-disc pl-5 space-y-2 text-on-surface">
-                        <li><strong>HDFC Mid-Cap Opportunities Fund</strong> (Direct Growth)</li>
-                        <li><strong>HDFC Flexi Cap Fund</strong> (Direct Growth)</li>
-                        <li><strong>HDFC Focused 30 Fund</strong> (Direct Growth)</li>
-                        <li><strong>HDFC ELSS Tax Saver Fund</strong> (Direct Plan Growth)</li>
-                        <li><strong>HDFC Top 100 / Large Cap Fund</strong> (Direct Growth)</li>
-                    </ul>
-                    <p class="text-on-surface-variant text-sm mt-3">You can query specific metrics such as Expense Ratio, Exit Load conditions, Net Asset Values (NAV), Assets Under Management (AUM), Riskometer rankings, and minimum investment limits. Standard compliance rules prevent advisory interpretations.</p>
+                <div class="space-y-5">
+                    <div class="bg-primary/10 border border-primary/20 rounded-xl p-4">
+                        <p class="font-semibold text-primary dark:text-[#4cdeac] mb-1">What does this assistant do?</p>
+                        <p class="text-sm text-on-surface">This is a <strong>facts-only</strong> mutual fund FAQ assistant. It answers objective, verifiable questions about 5 HDFC Mutual Fund schemes using data retrieved from official Groww product pages and HDFC fund documents. It does <strong>not</strong> offer investment advice, recommendations, or performance forecasts.</p>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-on-background mb-2">📋 Covered Schemes</p>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start gap-2"><span class="text-primary mt-0.5">●</span><div><strong>HDFC Mid-Cap Opportunities Fund</strong> (Direct Growth) — Mid Cap equity fund benchmarked to NIFTY Midcap 150 TRI.</div></li>
+                            <li class="flex items-start gap-2"><span class="text-primary mt-0.5">●</span><div><strong>HDFC Flexi Cap Fund</strong> (Direct Growth) — Multi-cap equity fund benchmarked to NIFTY 500 TRI.</div></li>
+                            <li class="flex items-start gap-2"><span class="text-primary mt-0.5">●</span><div><strong>HDFC Focused 30 Fund</strong> (Direct Growth) — Concentrated 30-stock equity fund benchmarked to NIFTY 500 TRI.</div></li>
+                            <li class="flex items-start gap-2"><span class="text-primary mt-0.5">●</span><div><strong>HDFC ELSS Tax Saver Fund</strong> (Direct Plan Growth) — Tax-saving equity fund with 3-year lock-in under Sec. 80C.</div></li>
+                            <li class="flex items-start gap-2"><span class="text-primary mt-0.5">●</span><div><strong>HDFC Top 100 / Large Cap Fund</strong> (Direct Growth) — Large Cap equity fund benchmarked to NIFTY 100 TRI.</div></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-on-background mb-2">✅ What you can ask</p>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="bg-surface-container rounded-lg p-2.5">Expense Ratio</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Exit Load details</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Minimum SIP amount</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Minimum lump-sum</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">NAV (Net Asset Value)</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">AUM (Fund Size)</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Riskometer category</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Benchmark index</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Fund Manager name</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">ELSS lock-in period</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Capital gains statement download</div>
+                            <div class="bg-surface-container rounded-lg p-2.5">Tax implications</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+                        <p class="font-semibold text-amber-600 dark:text-amber-400 mb-1">🚫 What is blocked (by design)</p>
+                        <ul class="text-sm space-y-1 text-on-surface">
+                            <li>• Investment advice or recommendations ("Should I invest?")</li>
+                            <li>• Performance forecasts or return comparisons</li>
+                            <li>• Queries containing personal data (PAN, Aadhaar, phone, OTP)</li>
+                            <li>• General questions unrelated to these 5 funds</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-t border-outline-variant/20 pt-3">
+                        <p class="text-xs text-on-surface-variant">Data sourced from: <a href="https://groww.in/mutual-funds" target="_blank" class="text-primary hover:underline">Groww.in</a>, <a href="https://www.hdfcfund.com" target="_blank" class="text-primary hover:underline">hdfcfund.com</a>, <a href="https://www.amfiindia.com" target="_blank" class="text-primary hover:underline">AMFI India</a>. Compliance rules follow SEBI investment advisory regulations.</p>
+                    </div>
                 </div>
             `;
             openModal("Investment FAQ Guidance", "help", content);
         }
 
-        function showTrendsModal() {
-            const content = `
-                <div class="space-y-4">
-                    <div class="bg-amber-500/10 border border-amber-500/20 text-amber-500 p-4 rounded-xl flex items-start gap-3">
-                        <span class="material-symbols-outlined">warning</span>
-                        <div>
-                            <p class="font-semibold">Compliance Filter Active</p>
-                            <p class="text-sm mt-1">To ensure strict adherence to SEBI investment advisory regulations, dynamic market predictions, speculative forecasts, and buy/sell advice are disabled.</p>
-                        </div>
-                    </div>
-                    <p>The FAQ Assistant only processes historical, verified facts. For live market index trackers, benchmark performance, and stock indices, please refer to the National Stock Exchange:</p>
-                    <div class="pt-2">
-                        <a href="https://www.nseindia.com" target="_blank" rel="noopener noreferrer" class="text-primary dark:text-[#4cdeac] hover:underline flex items-center gap-1">
-                            Go to National Stock Exchange (NSE India)
-                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
-                        </a>
-                    </div>
-                </div>
-            `;
-            openModal("Market Trends Filter", "trending_up", content);
-        }
+
 
         function showHistoryModal() {
+            const funds = [
+                {
+                    name: "HDFC Mid-Cap Opportunities Fund",
+                    type: "Mid Cap Equity",
+                    launch: "25 June 2007",
+                    nav: "₹10.00",
+                    benchmark: "NIFTY Midcap 150 TRI",
+                    category: "Very High Risk",
+                    lockIn: "None",
+                    minSip: "₹100",
+                    source: "https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth"
+                },
+                {
+                    name: "HDFC Flexi Cap Fund",
+                    type: "Flexi Cap Equity",
+                    launch: "01 January 1995",
+                    nav: "₹10.00",
+                    benchmark: "NIFTY 500 TRI",
+                    category: "Very High Risk",
+                    lockIn: "None",
+                    minSip: "₹100",
+                    source: "https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth"
+                },
+                {
+                    name: "HDFC Focused 30 Fund",
+                    type: "Focused Equity (max 30 stocks)",
+                    launch: "17 September 2004",
+                    nav: "₹10.00",
+                    benchmark: "NIFTY 500 TRI",
+                    category: "Very High Risk",
+                    lockIn: "None",
+                    minSip: "₹100",
+                    source: "https://groww.in/mutual-funds/hdfc-focused-fund-direct-growth"
+                },
+                {
+                    name: "HDFC ELSS Tax Saver Fund",
+                    type: "ELSS (Equity Linked Savings Scheme)",
+                    launch: "10 December 1999",
+                    nav: "₹10.00",
+                    benchmark: "NIFTY 500 TRI",
+                    category: "Very High Risk",
+                    lockIn: "3 years (mandatory, Sec. 80C)",
+                    minSip: "₹500",
+                    source: "https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth"
+                },
+                {
+                    name: "HDFC Top 100 / Large Cap Fund",
+                    type: "Large Cap Equity",
+                    launch: "11 October 1996",
+                    nav: "₹10.00",
+                    benchmark: "NIFTY 100 TRI",
+                    category: "Very High Risk",
+                    lockIn: "None",
+                    minSip: "₹100",
+                    source: "https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth"
+                }
+            ];
+
+            const cards = funds.map(f => `
+                <div class="border border-outline-variant/30 rounded-lg p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <p class="font-semibold text-on-background text-sm">${f.name}</p>
+                            <p class="text-xs text-on-surface-variant mt-0.5">${f.type}</p>
+                        </div>
+                        <a href="${f.source}" target="_blank" rel="noopener noreferrer" class="text-primary shrink-0 hover:underline text-xs flex items-center gap-0.5 mt-0.5">
+                            Groww
+                            <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                        <div><span class="text-on-surface-variant">Launch Date</span><p class="font-medium text-on-surface mt-0.5">${f.launch}</p></div>
+                        <div><span class="text-on-surface-variant">Launch NAV</span><p class="font-medium text-on-surface mt-0.5">${f.nav}</p></div>
+                        <div><span class="text-on-surface-variant">Benchmark Index</span><p class="font-medium text-on-surface mt-0.5">${f.benchmark}</p></div>
+                        <div><span class="text-on-surface-variant">Risk Category</span><p class="font-medium text-on-surface mt-0.5">${f.category}</p></div>
+                        <div><span class="text-on-surface-variant">Lock-in Period</span><p class="font-medium text-on-surface mt-0.5">${f.lockIn}</p></div>
+                        <div><span class="text-on-surface-variant">Min. SIP</span><p class="font-medium text-on-surface mt-0.5">${f.minSip}</p></div>
+                    </div>
+                </div>
+            `).join('');
+
             const content = `
                 <div class="space-y-4">
-                    <p class="font-semibold">Factual Launch & Benchmark History</p>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse mt-2">
-                            <thead>
-                                <tr class="border-b border-outline-variant/30 text-on-surface-variant text-sm">
-                                    <th class="pb-2 font-semibold pr-4">Scheme Name</th>
-                                    <th class="pb-2 font-semibold pr-4">Launch Date</th>
-                                    <th class="pb-2 font-semibold pr-4">Launch NAV</th>
-                                    <th class="pb-2 font-semibold">Benchmark</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-outline-variant/10 text-sm">
-                                <tr>
-                                    <td class="py-2.5 font-medium pr-4">HDFC Mid-Cap Opportunities</td>
-                                    <td class="py-2.5 pr-4">25 Jun 2007</td>
-                                    <td class="py-2.5 pr-4">₹10.00</td>
-                                    <td class="py-2.5">NIFTY Midcap 150 TRI</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 font-medium pr-4">HDFC Flexi Cap</td>
-                                    <td class="py-2.5 pr-4">01 Jan 1995</td>
-                                    <td class="py-2.5 pr-4">₹10.00</td>
-                                    <td class="py-2.5">NIFTY 500 TRI</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 font-medium pr-4">HDFC Focused 30</td>
-                                    <td class="py-2.5 pr-4">17 Sep 2004</td>
-                                    <td class="py-2.5 pr-4">₹10.00</td>
-                                    <td class="py-2.5">NIFTY 500 TRI</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 font-medium pr-4">HDFC ELSS Tax Saver</td>
-                                    <td class="py-2.5 pr-4">10 Dec 1999</td>
-                                    <td class="py-2.5 pr-4">₹10.00</td>
-                                    <td class="py-2.5">NIFTY 500 TRI</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 font-medium pr-4">HDFC Top 100 Large Cap</td>
-                                    <td class="py-2.5 pr-4">11 Oct 1996</td>
-                                    <td class="py-2.5 pr-4">₹10.00</td>
-                                    <td class="py-2.5">NIFTY 100 TRI</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <p class="text-sm text-on-surface-variant">All data sourced from official <strong>Groww product pages</strong> and HDFC Mutual Fund <strong>Scheme Information Documents (SIDs)</strong>. Launch NAV is the face value at inception for all direct-plan growth schemes.</p>
+                    <div class="space-y-3">${cards}</div>
+                    <div class="border-t border-outline-variant/20 pt-3 flex flex-wrap gap-3 text-xs">
+                        <a href="https://www.hdfcfund.com/downloads/factsheets" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline flex items-center gap-1">HDFC Factsheets <span class="material-symbols-outlined text-[11px]">open_in_new</span></a>
+                        <a href="https://www.amfiindia.com/nav-history" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline flex items-center gap-1">AMFI NAV History <span class="material-symbols-outlined text-[11px]">open_in_new</span></a>
+                        <a href="https://www.sebi.gov.in" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline flex items-center gap-1">SEBI Portal <span class="material-symbols-outlined text-[11px]">open_in_new</span></a>
                     </div>
-                    <p class="text-xs text-on-surface-variant mt-2 italic">*All figures are verified facts gathered from official Scheme Information Documents (SIDs).</p>
                 </div>
             `;
-            openModal("Scheme Launch History", "history", content);
+            openModal("Scheme Launch & Historical Data", "history", content);
         }
     </script>
 

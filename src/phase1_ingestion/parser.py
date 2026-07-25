@@ -222,18 +222,86 @@ def parse_html_page(file_path: str, scheme_config: Dict[str, Any]) -> List[Dict[
         
     return final_chunks
 
+def parse_generic_html_page(file_path: str) -> List[Dict[str, Any]]:
+    """
+    Parses a generic cached official HTML page and returns semantic chunks.
+    """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Generic HTML file not found at: {file_path}")
+        
+    with open(file_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
+        
+    soup = BeautifulSoup(html_content, "html.parser")
+    
+    # Extract source URL from meta tag
+    meta_url = soup.find("meta", attrs={"name": "source-url"})
+    source_url = meta_url["content"] if meta_url else "https://www.hdfcfund.com"
+    
+    # Determine the scheme name if it's scheme-specific, otherwise General
+    scheme_name = "General / Non-Scheme Specific"
+    file_lower = os.path.basename(file_path).lower()
+    for scheme in TARGET_SCHEMES:
+        # Match e.g. "hdfc-mid-cap-opportunities-fund" inside "hdfc-mid-cap-opportunities-fund-sid-kim.html"
+        clean_scheme_id = scheme["id"].replace("-direct-growth", "").replace("-direct-plan-growth", "").replace("-fund", "")
+        if clean_scheme_id in file_lower:
+            scheme_name = scheme["name"]
+            break
+            
+    today_str = datetime.date.today().isoformat()
+    chunks = []
+    
+    # Find all divs with class content-chunk
+    content_chunks = soup.find_all(class_="content-chunk")
+    for chunk in content_chunks:
+        text = clean_text(chunk.get_text(separator=" ", strip=True))
+        tags_attr = chunk.get("data-tags", "")
+        tags = [t.strip() for t in tags_attr.split(",") if t.strip()]
+        
+        chunks.append({
+            "text": text,
+            "metadata": {
+                "source_url": source_url,
+                "doc_type": "Official Public Page",
+                "scheme_name": scheme_name,
+                "last_updated": today_str,
+                "metric_tags": tags
+            }
+        })
+        
+    # If no content-chunk divs were found, fall back to parsing body text
+    if not chunks:
+        body = soup.find("body")
+        if body:
+            text = clean_text(body.get_text(separator=" ", strip=True))
+            chunks.append({
+                "text": text,
+                "metadata": {
+                    "source_url": source_url,
+                    "doc_type": "Official Public Page",
+                    "scheme_name": scheme_name,
+                    "last_updated": today_str,
+                    "metric_tags": ["general", "official"]
+                }
+            })
+            
+    return chunks
+
 def parse_all_crawled_pages() -> int:
     """
-    Parses all cached HTML files and outputs a single serialized corpus.json file.
+    Parses all cached HTML files (both schemes and generic pages) and outputs a single serialized corpus.json file.
     """
     os.makedirs(DATA_PROCESSED_DIR, exist_ok=True)
     all_chunks = []
     
+    scheme_filenames = {f"{scheme['id']}.html" for scheme in TARGET_SCHEMES}
+    
+    # 1. Parse main schemes (the 5 files with specific Groww-style templates)
     for scheme in TARGET_SCHEMES:
         scheme_id = scheme["id"]
         file_path = os.path.join(DATA_RAW_DIR, f"{scheme_id}.html")
         
-        logger.info(f"Parsing raw HTML for: {scheme['name']}")
+        logger.info(f"Parsing main scheme HTML for: {scheme['name']}")
         try:
             chunks = parse_html_page(file_path, scheme)
             all_chunks.extend(chunks)
@@ -242,6 +310,20 @@ def parse_all_crawled_pages() -> int:
             logger.error(f"Error parsing scheme {scheme['name']}: {e}")
             raise e
             
+    # 2. Parse all other files (the 15 generic official AMC/AMFI/SEBI pages)
+    if os.path.exists(DATA_RAW_DIR):
+        for filename in os.listdir(DATA_RAW_DIR):
+            if filename.endswith(".html") and filename not in scheme_filenames:
+                file_path = os.path.join(DATA_RAW_DIR, filename)
+                logger.info(f"Parsing generic official page: {filename}")
+                try:
+                    chunks = parse_generic_html_page(file_path)
+                    all_chunks.extend(chunks)
+                    logger.info(f"Successfully generated {len(chunks)} chunks for generic file {filename}")
+                except Exception as e:
+                    logger.error(f"Error parsing generic file {filename}: {e}")
+                    raise e
+                    
     with open(CORPUS_OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(all_chunks, f, indent=2, ensure_ascii=False)
         

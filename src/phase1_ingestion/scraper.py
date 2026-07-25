@@ -61,20 +61,30 @@ def scrape_and_cache_schemes(schemes: List[Dict[str, Any]] = TARGET_SCHEMES) -> 
             # Adding timeout to prevent hanging, and using browser headers
             response = requests.get(url, headers=HEADERS, timeout=15)
             
-            # Raise error on bad status code
+            # Raise error on bad status code if cache does not exist
             if response.status_code != 200:
-                logger.error(f"Failed to fetch {name}. HTTP Status Code: {response.status_code}")
-                raise RuntimeError(
-                    f"Failed to download {name} from {url}. Status Code: {response.status_code}"
-                )
+                if os.path.exists(output_file_path):
+                    logger.warning(f"Failed to fetch {name} (HTTP {response.status_code}). Using existing local cache.")
+                    cached_paths.append(output_file_path)
+                    continue
+                else:
+                    logger.error(f"Failed to fetch {name}. HTTP Status Code: {response.status_code}")
+                    raise RuntimeError(
+                        f"Failed to download {name} from {url}. Status Code: {response.status_code}"
+                    )
                 
             html_content = response.text
             
             # Validate that the page has some content and is not empty/placeholder
             if not html_content or len(html_content.strip()) < 1000:
-                raise RuntimeError(
-                    f"Retrieved content for {name} is empty or too small: {len(html_content)} bytes"
-                )
+                if os.path.exists(output_file_path):
+                    logger.warning(f"Fetched content for {name} is empty/invalid. Using existing local cache.")
+                    cached_paths.append(output_file_path)
+                    continue
+                else:
+                    raise RuntimeError(
+                        f"Retrieved content for {name} is empty or too small: {len(html_content)} bytes"
+                    )
                 
             # Write out to raw data cache file
             with open(output_file_path, "w", encoding="utf-8") as f:

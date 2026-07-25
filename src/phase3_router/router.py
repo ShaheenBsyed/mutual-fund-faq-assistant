@@ -24,7 +24,11 @@ ADVISORY_KEYWORDS = [
     "should i", "which is better", "best fund", "recommend", "predict", "forecast", "future performance",
     "will it double", "is it safe", "safe to invest", "market outlook", "buy or sell", "which fund to choose",
     "better returns", "highest returns", "how much will i earn", "guaranteed", "compare performance",
-    "should i invest", "good buy", "is it good", "worth investing", "investment advice"
+    "should i invest", "good buy", "is it good", "worth investing", "investment advice",
+    # Additional robust matches
+    "which fund is better", "which is best", "which fund is best", "will it double", "double my money",
+    "future outlook", "good time to invest", "good time to buy", "is it safe", "is it worth", "advice",
+    "advisor", "advisory", "opinion", "buy or sell"
 ]
 
 # Allowed mutual fund domain keywords
@@ -76,6 +80,22 @@ class QueryRouter:
                 return True
         return False
 
+    def is_performance_query(self, query: str) -> bool:
+        """
+        Scans for expressions asking about returns or performance metrics.
+        """
+        query_lower = query.lower()
+        performance_keywords = [
+            "return", "returns", "cagr", "performance", "annualized", "yield", 
+            "growth rate", "past returns", "track record", "interest rate",
+            "how much return", "historical return", "compounded return",
+            "performed", "performing", "cagr"
+        ]
+        for kw in performance_keywords:
+            if kw in query_lower:
+                return True
+        return False
+
     def is_out_of_scope(self, query: str) -> bool:
         """
         Checks if the query is unrelated to the mutual fund FAQ domain.
@@ -111,7 +131,21 @@ class QueryRouter:
                 "citation": None  # STRICT REQUIREMENT: No URLs for PII block
             }
             
-        # Step 2: Detect Advisory
+        # Step 2: Detect Performance
+        if self.is_performance_query(query):
+            logger.info("Query routed to Refusal Engine: Performance query detected")
+            return {
+                "category": "performance",
+                "should_refuse": True,
+                "reason": "Performance / Returns Query",
+                "refusal_message": (
+                    "I am a facts-only mutual fund FAQ assistant and cannot display or compare fund returns. "
+                    "You can view the official HDFC Mutual Fund factsheets at: https://www.hdfcfund.com/downloads/factsheets"
+                ),
+                "citation": "https://www.hdfcfund.com/downloads/factsheets"
+            }
+            
+        # Step 3: Detect Advisory
         if self.is_advisory(query):
             logger.info("Query routed to Refusal Engine: Advisory content detected")
             return {
@@ -126,7 +160,7 @@ class QueryRouter:
                 "citation": "https://www.amfiindia.com/investor-corner/education-series"
             }
             
-        # Step 3: Detect Out of Scope
+        # Step 4: Detect Out of Scope
         if self.is_out_of_scope(query):
             logger.info("Query routed to Refusal Engine: Out of scope")
             return {
@@ -140,7 +174,7 @@ class QueryRouter:
                 "citation": None  # No URLs for general out of scope
             }
             
-        # Step 4: Pass to Ingestion/Retrieval
+        # Step 5: Pass to Ingestion/Retrieval
         logger.info("Query routed to RAG Retrieval Pipeline: Factual query verified")
         return {
             "category": "factual",

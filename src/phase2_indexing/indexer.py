@@ -3,6 +3,10 @@ import json
 import logging
 import chromadb
 from chromadb.utils import embedding_functions
+from dotenv import load_dotenv
+
+# Load GEMINI_API_KEY from .env (local) or environment (Render)
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -22,10 +26,16 @@ COLLECTION_NAME = "mutual_funds"
 
 def build_vector_index() -> int:
     """
-    Loads data/processed/corpus.json, initializes ChromaDB with all-MiniLM-L6-v2 embeddings,
+    Loads data/processed/corpus.json, initializes ChromaDB with Google Gemini
+    text-embedding-004 embeddings (API-based, no local model RAM required),
     and indexes the corpus.
     """
     logger.info("Initializing vector index build...")
+
+    # Verify API key is present
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise EnvironmentError("GEMINI_API_KEY environment variable is not set. Cannot initialize embedding function.")
     
     # Check if cleaned corpus exists
     if not os.path.exists(CORPUS_JSON_PATH):
@@ -42,11 +52,11 @@ def build_vector_index() -> int:
     logger.info(f"Connecting to persistent ChromaDB at: {DB_DIR_PATH}")
     client = chromadb.PersistentClient(path=DB_DIR_PATH)
     
-    # 2. Configure embedding function
-    logger.info("Initializing local SentenceTransformerEmbeddingFunction (all-MiniLM-L6-v2)...")
-    # This automatically downloads and uses all-MiniLM-L6-v2 locally
-    embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name="all-MiniLM-L6-v2"
+    # 2. Configure Gemini embedding function (API-based, zero local RAM)
+    logger.info("Initializing GoogleGenerativeAiEmbeddingFunction (text-embedding-004)...")
+    embedding_fn = embedding_functions.GoogleGenerativeAiEmbeddingFunction(
+        api_key=api_key,
+        model_name="models/text-embedding-004"
     )
     
     # 3. Create or replace the collection to prevent duplicate accumulation

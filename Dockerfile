@@ -17,9 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the full project
 COPY . .
 
-# Pre-download the sentence-transformer model at build time
-# so the container starts instantly without a network round-trip
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+
 
 # Expose default port (Render overrides via $PORT env var)
 EXPOSE 7860

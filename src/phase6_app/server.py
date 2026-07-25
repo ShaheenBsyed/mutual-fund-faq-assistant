@@ -42,19 +42,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Instantiate singleton instances of our pipeline engines to avoid reloading models on requests
-try:
-    logger.info("Initializing Pipeline Components...")
+# Lazy singletons — loaded on first request to allow uvicorn to bind the port
+# before heavy ML models (sentence-transformers + ChromaDB) are pulled into RAM.
+# This prevents OOM crashes on memory-constrained hosts (e.g. Render free tier 512 MB).
+router = None
+retriever = None
+synthesis_engine = None
+
+def _load_components():
+    """Load all pipeline components. Safe to call multiple times (no-op if already loaded)."""
+    global router, retriever, synthesis_engine
+    if router and retriever and synthesis_engine:
+        return  # Already loaded
+    logger.info("Lazy-loading pipeline components (first request)...")
     router = QueryRouter()
     retriever = HybridRetriever()
     synthesis_engine = LLMSynthesisEngine()
-    logger.info("All pipeline components pre-warmed and loaded successfully.")
-except Exception as e:
-    logger.error(f"Critical error initializing components: {e}")
-    # We will instantiate them inside routes if they fail on start to allow server boot
-    router = None
-    retriever = None
-    synthesis_engine = None
+    logger.info("All pipeline components loaded successfully.")
 
 # Request & Response Schemas
 class ChatRequest(BaseModel):
@@ -113,17 +117,12 @@ async def chat_endpoint(request: ChatRequest):
     query = request.message.strip()
     logger.info(f"Received API Chat Query: '{query}'")
     
-    # Safety Check: ensure components are loaded
-    global router, retriever, synthesis_engine
-    if not router or not retriever or not synthesis_engine:
-        logger.info("Late-loading pipeline components...")
-        try:
-            router = QueryRouter()
-            retriever = HybridRetriever()
-            synthesis_engine = LLMSynthesisEngine()
-        except Exception as err:
-            logger.critical(f"Pipeline components failed to load: {err}")
-            raise HTTPException(status_code=500, detail="Core semantic models failed to initialize.")
+    # Safety Check: ensure components are loaded (lazy init on first request)
+    try:
+        _load_components()
+    except Exception as err:
+        logger.critical(f"Pipeline components failed to load: {err}")
+        raise HTTPException(status_code=500, detail="Core semantic models failed to initialize.")
 
     # Step 1: Semantic Routing & Classification (Phase 3)
     route_result = router.route_query(query)
